@@ -22,7 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container,createInitialFragment())
+                    .replace(R.id.fragment_container, createInitialFragment())
                     .commit();
         }
     }

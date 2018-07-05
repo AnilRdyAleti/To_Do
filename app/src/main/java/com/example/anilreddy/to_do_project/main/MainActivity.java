@@ -1,4 +1,4 @@
-package com.example.anilreddy.to_do_project.Main;
+package com.example.anilreddy.to_do_project.main;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

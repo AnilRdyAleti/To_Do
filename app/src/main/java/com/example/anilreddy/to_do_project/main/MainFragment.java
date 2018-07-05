@@ -13,11 +13,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.anilreddy.to_do_project.MainApplication;
 import com.example.anilreddy.to_do_project.R;
 import com.example.anilreddy.to_do_project.addToDo.AddToDoActivity;
 import com.example.anilreddy.to_do_project.appDefault.BaseFragment;
 import com.example.anilreddy.to_do_project.utility.ItemTouchHelperClass;
 import com.example.anilreddy.to_do_project.utility.RecyclerViewEmptySupport;
+import com.example.anilreddy.to_do_project.utility.StoreRetrieveData;
 import com.example.anilreddy.to_do_project.utility.ToDoItem;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class MainFragment extends BaseFragment {
     public static final String THEME_SAVED = "com.avjindersekhon.savedtheme";
     public static final String DARKTHEME = "com.avjindersekon.darktheme";
     public static final String LIGHTTHEME = "com.avjindersekon.lighttheme";
-    private AnalyticsApplication app;
+    private MainApplication app;
     private String[] testStrings = {"Clean my room",
             "Water the plants",
             "Get car washed",
@@ -125,9 +127,4 @@ public class MainFragment extends BaseFragment {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mRecyclerView.removeOnScrollListener(customRecyclerScrollViewListener);
-    }
 }

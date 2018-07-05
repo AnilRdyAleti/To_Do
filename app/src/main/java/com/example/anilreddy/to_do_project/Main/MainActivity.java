@@ -1,10 +1,11 @@
-package com.example.anilreddy.to_do_project;
+package com.example.anilreddy.to_do_project.Main;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.example.anilreddy.to_do_project.R;
 import com.example.anilreddy.to_do_project.appDefault.BaseActivity;
 
 public class MainActivity extends BaseActivity {
@@ -17,7 +18,7 @@ public class MainActivity extends BaseActivity {
     @NonNull
     @Override
     protected Fragment createInitialFragment() {
-        return null;
+        return MainFragment.newInstance();
     }
 
     @Override

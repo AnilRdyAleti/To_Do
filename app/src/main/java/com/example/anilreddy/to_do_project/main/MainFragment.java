@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -28,6 +29,7 @@ import com.example.anilreddy.to_do_project.MainApplication;
 import com.example.anilreddy.to_do_project.R;
 import com.example.anilreddy.to_do_project.addToDo.AddToDoActivity;
 import com.example.anilreddy.to_do_project.appDefault.BaseFragment;
+import com.example.anilreddy.to_do_project.reminder.ReminderFragment;
 import com.example.anilreddy.to_do_project.utility.ItemTouchHelperClass;
 import com.example.anilreddy.to_do_project.utility.RecyclerViewEmptySupport;
 import com.example.anilreddy.to_do_project.utility.StoreRetrieveData;
@@ -193,6 +195,84 @@ public class MainFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        app.send(this);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
+        if (sharedPreferences.getBoolean(ReminderFragment.EXIT, false)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(ReminderFragment.EXIT, false);
+            editor.apply();
+            getActivity().finish();
+        }
+
+        if (getActivity().getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE).getBoolean(RECREATE_ACTIVITY, false)) {
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE).edit();
+            editor.putBoolean(RECREATE_ACTIVITY, false);
+            editor.apply();
+            getActivity().recreate();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        app = (MainApplication) getActivity().getApplication();
+        super.onStart();
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
+        if (sharedPreferences.getBoolean(CHANGE_OCCURED, false)) {
+            mToDoItemsArrayList = getLocallyStoredData(storeRetrieveData);
+            adapter = new MainFragment.BasicListAdapter(mToDoItemsArrayList);
+            mRecyclerView.setAdapter(adapter);
+            setAlarms();
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(CHANGE_OCCURED,false);
+            editor.apply();
+        }
+    }
+
+
+    private void saveDate() {
+        try {
+            storeRetrieveData.saveToFile(mToDoItemsArrayList);
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            storeRetrieveData.saveToFile(mToDoItemsArrayList);
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mRecyclerView.removeOnScrollListener(customRecyclerScrollViewListener);
+    }
+
+    public void addThemeToSharedPreferences(String theme) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(THEME_SAVED, theme);
+        editor.apply();
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+
+
+    @Override
     protected int layoutRes() {
         return R.layout.fragment_main;
     }
@@ -270,29 +350,4 @@ public class MainFragment extends BaseFragment {
             }
         }
     }
-
-    private void saveDate() {
-        try {
-            storeRetrieveData.saveToFile(mToDoItemsArrayList);
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        try {
-            storeRetrieveData.saveToFile(mToDoItemsArrayList);
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mRecyclerView.removeOnScrollListener(customRecyclerScrollViewListener);
-    }
-
 }
